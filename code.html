@@ -1,0 +1,468 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<style>
+    .autocomplete {
+        /*the container must be positioned relative:*/
+        position: relative;
+        display: inline-block;
+    }
+    
+    .autocomplete-items {
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+    
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+    
+    .autocomplete-items div:hover {
+        /*when hovering an item:*/
+        background-color: #e9e9e9;
+    }
+    
+    .autocomplete-active {
+        /*when navigating through the items using the arrow keys:*/
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
+    
+    /* Mobile stuff */
+    @media (max-width: 700px) {
+        #layoutHeader {
+            display: none !important;
+        }
+    
+        #layoutSideMenu {
+            display: none !important;
+        }
+    
+        #div_fixedWidthContainer {
+            width: 100% !important;
+            min-width: auto !important;
+        }
+    
+        #layoutPageContent {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-bottom: 0 !important;
+        }
+    
+        .subHeader {
+            display: none !important;
+        }
+    
+        .fields > div[data-inspreadsheet=false] {
+            width: 100% !important;
+            height: auto !important;
+        }
+    
+        td {
+            display: block;
+            width: 99.9% !important;
+            clear: both;
+            border: none !important;
+        }
+        td > input {
+            width: 90%;
+        }
+        #frmResponse {
+            margin-top: -10px;
+        }
+        #frmResponse > div {
+            margin: 0 !important;
+        }
+    
+        td.content {
+            padding: 0 !important;
+        }
+        #formButtons > table {
+            width: 100% !important;
+        }
+        #formButtons > table > tbody > tr > td {
+            height: 65px;
+        }
+        #formButtons > table > tbody > tr > td > input {
+            width: 100%;
+            height: 50px;
+        }
+        .appHeader {
+            display: none !important;
+        }
+        #layoutPageContent > div > table > tbody > tr:nth-child(1) {
+            display: none !important;
+        }
+        #header-wrapper {
+            height: 50px;
+            background-color: rgb(28,42,115);
+            color: white;
+            padding-left: 5%;
+        }
+        #header-wrapper > .big {
+            font-size: 1.4em;
+            width: 100%;
+            line-height: 48px;
+        }
+        #header-wrapper > .small {
+            font-size: 0.8em;
+            margin-left: 3%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #react_toolbar {
+            display: none !important;
+        }
+        .formSection .sectionContent {
+            border: none;
+        }
+        .sectionHeader {
+            border: none !important;
+        }
+        #formButtons > table > tbody > tr > td:nth-child(3) {
+            display: none !important;
+        }
+        .formSection .heading {
+            font-size: 1.1em;
+            padding-left: 2px;
+            font-weight: normal;
+        }
+        .formSection .fields {
+            margin-top: 6px;
+        }
+        .label {
+            background-color: transparent !important;
+            font-weight: bold;
+        }
+        td.input {
+            height: auto !important;
+            padding: 0 !important;
+        }
+        input.fieldInput {
+            height: 25px !important;
+        }
+        .formSection .spreadsheetWrapper {
+            overflow-x: hidden;
+        }
+        #formSections > li:nth-child(2) > table > tbody > tr > td > div.spreadsheetWrapper > div > div > table > tbody > tr > td {
+            height: auto !important;
+        }
+        tbody > tr > td > div.spreadsheetWrapper > div {
+            /*width: 100% !important;*/
+        }
+        .spreadsheetFields > .formField {
+            width: 50% !important;
+        }
+        #formSections > li:nth-child(1) > table > tbody > tr > td > div.fields > div > table > tbody > tr > td.input > table > tbody > tr > td > .optionsPreview {
+            width: 50% !important;
+        }
+        #formSections > li:nth-child(1) > table > tbody > tr > td > div.fields > div > table > tbody > tr > td.input > table > tbody > tr > td > .optionsPreview > select {
+            width: 100% !important;
+        }
+    }
+</style>
+    <script lang="text/javascript">
+
+        const slopes = ["5 Mile Lower",
+        "5 Mile Upper",
+        "Anticipation",
+        "Burfield Outrun",
+        "Cahilty",
+        "Connector",
+        "Cowabunga",
+        "Crystal Lane",
+        "Downtown",
+        "East Village Ski Way",
+        "Fairways Ski-Back",
+        "Gentle Giant",
+        "Home Instead",
+        "Home Run",
+        "Homesteader Lower",
+        "Homesteader Upper",
+        "Main Village",
+        "Mt. Morrisey Connector",
+        "Rambler",
+        "Sunbeam",
+        "Terrain Park - Green Zone",
+        "The Sticks",
+        "Alley",
+        "Ausfahrt",
+        "Back In Time",
+        "Blazer",
+        "Blue Line",
+        "C.C. Riders",
+        "Ça M'a Fait Plaisir",
+        "Carpe Diem",
+        "Chikamichi",
+        "Cruiser Lower",
+        "Cruiser Upper",
+        "Crystal Run",
+        "Cześć",
+        "Distributor",
+        "Exhibition Lower",
+        "Exhibition Upper",
+        "Fair Dinkum",
+        "Fall Line",
+        "Grand Return",
+        "Grannie Greene's",
+        "Harry's Run",
+        "Hasta La Vista",
+        "Hot Shot",
+        "Hully Gully",
+        "I'Dunno",
+        "Last Chance",
+        "Lone Fir Centre",
+        "Lone Fir West",
+        "Long Draw",
+        "Lunch Time",
+        "Mid-Life Crisis",
+        "Munro Ridge Lower",
+        "Munro Ridge Upper",
+        "OSV",
+        "Out Of The Woods",
+        "Quick Shot",
+        "Round-A-Bout",
+        "Runaway Lane",
+        "Second Growth",
+        "Shiner",
+        "Short Draw",
+        "Shortcut",
+        "Showboat",
+        "Still Smokin'",
+        "Sun Catcher",
+        "Sun Downer Lower",
+        "Sun Downer Upper",
+        "Sundance Lower",
+        "Sundance Upper",
+        "Sunrise",
+        "Telly Gram",
+        "Terrain Park - Blue Zone",
+        "The Other Way",
+        "The Spine",
+        "Three Bears",
+        "Trans Canada",
+        "West Bushwacker",
+        "Westsyde",
+        "5th Avenue",
+        "Agitator",
+        "Back Door",
+        "Bluff",
+        "Broadway",
+        "Cariboo",
+        "Chief",
+        "Chief Shoulder",
+        "Coquihalla",
+        "Cover Shot",
+        "Crystal Bowl",
+        "East Bushwacker",
+        "Father Tom's",
+        "Gil's Area",
+        "Hat Trick",
+        "Headwalls",
+        "Highway 22",
+        "Highway 22A",
+        "Intimidator",
+        "Juniper Ridge",
+        "Lint Trap",
+        "Mid Mountain",
+        "Nose Of The Chief",
+        "Peak-A-Boo",
+        "Pink Flamingos",
+        "Ralph's Reach",
+        "Rice Bowl",
+        "Roller Coaster",
+        "Sacred Line",
+        "Skunk",
+        "Spillway",
+        "Spin Cycle",
+        "Sting",
+        "Sunny Side",
+        "Terrain Park - Black Zone",
+        "Tighten Yer Boots",
+        "Toilet Bowl",
+        "Tumble Dry",
+        "White Rabbit",
+        "Wringer",
+        "Challenger",
+        "Chute Lower",
+        "Chute Upper",
+        "Expo",
+        "Freddy's",
+        "Green Door",
+        "In Tatters",
+        "Kookamungas",
+        "Offset",
+        "Static Cling",
+        "Blazer Glades",
+        "Bluff Glades",
+        "Bug Out Glades",
+        "Bushwacker Glades",
+        "Cahilty Glades",
+        "Cariboo Glades",
+        "Challenger Glades",
+        "Chillway Glades",
+        "Coquihalla Glades",
+        "Cruiser Glades",
+        "Crystal Glades",
+        "Gil's - Easy Out Glades",
+        "Gil's - Inner Gil's Glades",
+        "Gil's - Main Face Glades",
+        "Gil's - Rollers Glades",
+        "Grannie Greene's Glades",
+        "Lonesome Fir Glades",
+        "Runaway Lane Glades",
+        "Three Bears Glades"];
+    
+            function autocomplete(inp, arr, isTextField) {
+            var currentFocus;
+            inp.addEventListener("input", function(e) {
+                var a, b, i, curVal = this.value;
+                closeAllLists();
+                if (!curVal) { return false;}
+                currentFocus = -1;
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                this.parentNode.appendChild(a);
+                const splitInp = curVal.split(",");
+                for (i = 0; i < arr.length; i++) {
+                    const val = splitInp[splitInp.length-1].trim(); // lastinput
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                        b = document.createElement("DIV");
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                        b.innerHTML += arr[i].substr(val.length);
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        b.addEventListener("click", function(e) {
+                            // First remove what's written (so we only get the value from dropdown)
+                            inp.value = inp.value.substring(0, inp.value.length-val.length);
+                            inp.value += this.getElementsByTagName("input")[0].value;
+                            inp.value += isTextField ? ", " : "";
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+                    }
+                }
+        });
+        inp.addEventListener("keydown", function(e) {
+                var x = document.getElementById(this.id + "autocomplete-list");
+                if (x) x = x.getElementsByTagName("div");
+                if (e.keyCode == 40) {
+                    currentFocus++;
+                    addActive(x);
+                } else if (e.keyCode == 38) { 
+                    currentFocus--;
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        if (x) x[currentFocus].click();
+                    }
+                }
+        });
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+        function closeAllLists(elmnt) {
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+        document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+        });
+    }
+
+    function waitForElm(selector) {
+        return new Promise(resolve => {
+            if (document.querySelector(selector)) {
+                return resolve(document.querySelector(selector));
+            }
+    
+            const observer = new MutationObserver(mutations => {
+                if (document.querySelector(selector)) {
+                    resolve(document.querySelector(selector));
+                    observer.disconnect();
+                }
+            });
+    
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    }
+    
+    window.onload = function WindowLoad(event) {
+        let names = [];
+        fetch("https://raw.githubusercontent.com/jakobstau/class-card-names/main/names.txt")
+		.then(response => response.text())
+		.then(namesFetched => {
+			names = namesFetched.split("\n");
+            // Autocomplete on first guest name
+            let countRows = 1;
+            let firstGuestEle = document.getElementsByName(`field7808row${countRows++}`)[0];
+            firstGuestEle.parentElement.classList.add('autocomplete');
+            autocomplete(firstGuestEle, names, false);
+
+            // Autocomplete on subceding
+            const addRowAnchor = document.querySelector(".addSpreadsheetRow > a");
+            addRowAnchor?.addEventListener("click", function(e) {
+                waitForElm(`input[name="field7808row${countRows++}"]`).then((ele) => {
+                    ele.parentElement.classList.add('autocomplete');
+                    autocomplete(ele, names, false);
+                })
+            });
+		});
+        
+        // Where
+        let whereEle = document.getElementsByName(`field7811`)[0];
+        whereEle.parentElement.classList.add('autocomplete');
+        autocomplete(whereEle, slopes, true);
+
+        // Insert css after page load that somehow made the page break when added in the <style>
+        /*const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+        if(vw <= 700) {
+            const fieldsEles = document.getElementsByClassName("fields");
+            for (const fieldEle of fieldsEles) {
+                for(const child of fieldEle.children) {
+                    child.style.width = "50%";
+                    child.style.height = "auto";
+                }
+             }
+        }*/
+
+        const newHeader = document.createElement("div")
+        newHeader.setAttribute("id", "header-wrapper");
+
+        const firstSpan = document.createElement("span");
+        firstSpan.innerText = "AlpineConnect";
+        firstSpan.classList.add("big");
+
+        const secondSpan = document.createElement("span");
+        secondSpan.innerText = "Sports School Class Card";
+        secondSpan.classList.add("small");
+
+        newHeader.appendChild(firstSpan);
+        newHeader.appendChild(secondSpan);
+
+        document.querySelector("body").insertBefore(newHeader, document.getElementById("div_root"));
+    }
+    </script>
