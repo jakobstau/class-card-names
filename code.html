@@ -416,6 +416,7 @@
 		.then(response => response.text())
 		.then(namesFetched => {
 			names = namesFetched.split("\n");
+            names = [...new Set(names)];
             // Autocomplete on first guest name
             let countRows = 1;
             let firstGuestEle = document.getElementsByName(`field7808row${countRows++}`)[0];
