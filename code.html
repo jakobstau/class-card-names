@@ -125,9 +125,6 @@
         .sectionHeader {
             border: none !important;
         }
-        #formButtons > table > tbody > tr > td:nth-child(3) {
-            display: none !important;
-        }
         .formSection .heading {
             font-size: 1.1em;
             padding-left: 2px;
@@ -169,7 +166,18 @@
 </style>
     <script lang="text/javascript">
 
-        const slopes = ["5 Mile Lower",
+        const slopes = [
+        "Progression Park", "Easy Wind", "Level Up", "Lever Lovers", "Morning Dew",
+        "Switcheroo", "Altitude (XC)", "Barn Burner", "Bermalade", "Big Rock Ride (XC)",
+        "Canada Line", "Gummy Bear", "Holy Rollers", "Might As Well", "Milhouse",
+        "Resurrection", "Root Dog", "Route 66", "Sour Patch Skids", "Spicy Taco", "Stella Blue", 
+        "Sweater Vest", "Arm Pump", "Bad Habit", "Behind Bars", "Biker Cross", "Cat Trax", "DH",
+        "Hi Octane", "Kaboom", "Keener", "Mach", "Repeat Offender", "Steam Shovel Upper", "Sugar",
+        "Super Nugget", "Sweet One", "Creeper", "Gnar-Boom", "Honey Drop", "Insanity One", 
+        "Smitty's Steeps", "Steam Shovel Lower", "Sticky One", "Flow Zone", "4 Road (RD)", 
+        "5 Mile Road (RD)", "Homesteader Road (RD)", "Lower Shortcut (RD)", "Old Homesteader Road (RD)"
+        ];
+        /*const slopes = ["5 Mile Lower",
         "5 Mile Upper",
         "Anticipation",
         "Burfield Outrun",
@@ -203,7 +211,7 @@
         "Cruiser Lower",
         "Cruiser Upper",
         "Crystal Run",
-        "Cześć",
+        "Czesc",
         "Distributor",
         "Exhibition Lower",
         "Exhibition Upper",
@@ -317,7 +325,10 @@
         "Grannie Greene's Glades",
         "Lonesome Fir Glades",
         "Runaway Lane Glades",
-        "Three Bears Glades"];
+        "Three Bears Glades",
+        "Magic carpet",
+        "Learning zone",
+        "Village carpet"];*/
     
             function autocomplete(inp, arr, isTextField) {
             var currentFocus;
@@ -344,6 +355,12 @@
                             inp.value += this.getElementsByTagName("input")[0].value;
                             inp.value += isTextField ? ", " : "";
                             closeAllLists();
+
+                            // If on "where" field, stay focused to write the next run
+                            if(isTextField) {
+                                inp.focus();
+                                inp.selectionStart = inp.selectionEnd = 10000;
+                            }
                         });
                         a.appendChild(b);
                     }
@@ -465,5 +482,16 @@
         newHeader.appendChild(secondSpan);
 
         document.querySelector("body").insertBefore(newHeader, document.getElementById("div_root"));
+
+
+        // Remove all the "Reset form buttons"
+        var parents = document.querySelectorAll('#formButtons > table > tbody > tr > td');
+        parents.forEach(function(parent) {
+            var child = parent.querySelector('input[name="btn_reset"]');
+            
+            if (child !== null) {
+                parent.style.display = 'none';
+            }
+        });
     }
     </script>
